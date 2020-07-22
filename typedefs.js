@@ -14,24 +14,17 @@ module.exports = `
     SUCCESSFUL
   }
 
-  enum TaskType {
-    ONE
-    MULTI
-  }
-
   type Task {
     id: ID!
     createdAt: DateTime!
     updatedAt: DateTime!
     expiredAt: DateTime!
     status: TaskStatus!
-    type: TaskType!
     action: String!,
     payload: String! 
+    assignedTo: ID
     # in seconds
     timeout: Int!
-    # if jobType is ONE
-    acquiredBy: ID
   }
 
   type Bot {
@@ -41,16 +34,17 @@ module.exports = `
   }
 
   input CreateTaskInput {
-    type: TaskType!
     action: String!
     payload: String! 
     expiredAt: DateTime!
     timeout: Int!
+    assignedTo: ID!
   }
 
   type Mutation {
     # Send a report to server every interval
     ping: Boolean!
+    # Create new task for Control or Job queue
     createTask(to: QueueName!, input: CreateTaskInput!): Task
   }
 

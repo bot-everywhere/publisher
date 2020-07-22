@@ -1,7 +1,7 @@
 const shortid = require('shortid')
 const { GraphQLDate, GraphQLTime, GraphQLDateTime } = require('graphql-iso-date')
 
-const PING_INTERVAL = 1 // mins
+const PING_INTERVAL = 10 // mins
 
 module.exports = {
   Date: GraphQLDate,
@@ -16,11 +16,8 @@ module.exports = {
   Query: {
     controls: (_, { first }, { Control, botId }) => {
       const selector = {
+        assignedTo: botId,
         expiredAt: { $gte: new Date() },
-        $or: [
-          { type: 'ONE', status: 'QUEUEING', acquiredBy: { $exists: false } },
-          { type: 'MULTI', status: 'QUEUEING', acquiredBy: botId },
-        ]
       }
       return Control
         .find(selector)
@@ -29,11 +26,8 @@ module.exports = {
     },
     jobs: (_, { first }, { Job, botId }) => {
       const selector = {
+        assignedTo: botId,
         expiredAt: { $gte: new Date() },
-        $or: [
-          { type: 'ONE', status: 'QUEUEING', acquiredBy: { $exists: false } },
-          { type: 'MULTI', status: 'QUEUEING', acquiredBy: botId },
-        ]
       }
       return Job
         .find(selector)
@@ -69,6 +63,6 @@ module.exports = {
       return Bot
         .updateOne(selector, doc, options)
         .then(({ result: { ok } }) => !!ok)
-    }
+    },
   }
 }
