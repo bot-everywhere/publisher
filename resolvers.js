@@ -1,5 +1,4 @@
 const shortid = require('shortid')
-const { GraphQLJSON, GraphQLJSONObject } = require('graphql-type-json')
 const { GraphQLDate, GraphQLTime, GraphQLDateTime } = require('graphql-iso-date')
 
 const PING_INTERVAL = 1 // mins
@@ -8,8 +7,6 @@ module.exports = {
   Date: GraphQLDate,
   DateTime: GraphQLDateTime,
   Time: GraphQLTime,
-  JSON: GraphQLJSON,
-  JSONObject: GraphQLJSONObject,
   Bot: {
     live: ({ updatedAt }) => {
       const t = new Date(updatedAt).getTime()
@@ -18,7 +15,19 @@ module.exports = {
   },
   Query: {
     controls: () => [],
-    jobs: () => [],
+    jobs: (_, { first }, { db, botId }) => {
+      const jobs = db.collection('jobs')
+      const selector = {
+        $or: [
+          { type: 'ONE', status: 'QUEUEING', acquiredBy: { $exists: false } },
+          { type: 'MULTI', status: 'QUEUEING', acquiredBy: botId },
+        ]
+      }
+      return jobs
+        .find(selector)
+        .limit(first)
+        .toArray()
+    },
     bots: (_, {}, { db }) => {
       const bots = db.collection('bots')
       const selector = {}

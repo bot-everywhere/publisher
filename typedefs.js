@@ -2,8 +2,6 @@ module.exports = `
   scalar Date
   scalar Time
   scalar DateTime
-  scalar JSON
-  scalar JSONObject
 
   enum JobStatus {
     QUEUEING
@@ -13,7 +11,7 @@ module.exports = `
 
   enum JobType {
     ONE
-    ALL
+    MULTI
   }
 
   type Job {
@@ -24,7 +22,7 @@ module.exports = `
     status: JobStatus!
     type: JobType!
     action: String!,
-    payload: JSON!
+    payload: String! 
     # if jobType is ONE
     acquiredBy: ID
   }
@@ -42,7 +40,7 @@ module.exports = `
   input CreateJobInput {
     type: JobType!
     action: String!
-    payload: JSON! 
+    payload: String! 
     expiredAt: DateTime!
   }
 
@@ -55,7 +53,7 @@ module.exports = `
   type Query {
     bots: [Bot!]!
     # Job queue
-    jobs: [Job!]!
+    jobs(first: Int!): [Job!]!
     # Control queue
     controls: [Control!]!
   }

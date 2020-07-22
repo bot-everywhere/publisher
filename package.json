@@ -9,7 +9,6 @@
   "dependencies": {
     "dotenv": "^8.2.0",
     "graphql-iso-date": "^3.6.1",
-    "graphql-type-json": "^0.3.2",
     "graphql-yoga": "^1.18.3",
     "log4js": "^6.3.0",
     "mongodb": "^3.5.9",
