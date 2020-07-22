@@ -13,6 +13,7 @@
     "graphql-yoga": "^1.18.3",
     "log4js": "^6.3.0",
     "mongodb": "^3.5.9",
-    "nodemon": "^2.0.4"
+    "nodemon": "^2.0.4",
+    "shortid": "^2.2.15"
   }
 }

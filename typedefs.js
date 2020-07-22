@@ -5,11 +5,28 @@ module.exports = `
   scalar JSON
   scalar JSONObject
 
+  enum JobStatus {
+    QUEUEING
+    FAILED
+    SUCCESSFUL
+  }
+
+  enum JobType {
+    ONE
+    ALL
+  }
+
   type Job {
     id: ID!
     createdAt: DateTime!
-    action: String,
-    acquiredBy: ID!
+    updatedAt: DateTime!
+    expiredAt: DateTime!
+    status: JobStatus!
+    type: JobType!
+    action: String!,
+    payload: JSON!
+    # if jobType is ONE
+    acquiredBy: ID
   }
 
   type Control {
@@ -22,9 +39,17 @@ module.exports = `
     live: Boolean!
   }
 
+  input CreateJobInput {
+    type: JobType!
+    action: String!
+    payload: JSON! 
+    expiredAt: DateTime!
+  }
+
   type Mutation {
     # Send a report to server every interval
     ping(id: ID!): Boolean!
+    createJob(input: CreateJobInput!): Job
   }
 
   type Query {
@@ -35,4 +60,3 @@ module.exports = `
     controls(botId: ID!): [Control!]!
   }
 `
-
