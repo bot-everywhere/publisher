@@ -25,10 +25,15 @@ MongoClient.connect(
     const server = new GraphQLServer({
       typeDefs,
       resolvers,
-      context: ({ request }) => ({
-        db: client.db(process.env.DB_NAME),
-        botId: request.headers['bot-id'],
-      })
+      context: ({ request }) => {
+        const db = client.db(process.env.DB_NAME)
+        return {
+          Job: db.collection('jobs'),
+          Control: db.collection('controls'),
+          Bot: db.collection('bots'),
+          botId: request.headers['bot-id'],
+        }
+      }
     })
 
     const options = {

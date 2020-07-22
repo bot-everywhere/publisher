@@ -15,30 +15,28 @@ module.exports = {
   },
   Query: {
     controls: () => [],
-    jobs: (_, { first }, { db, botId }) => {
-      const jobs = db.collection('jobs')
+    jobs: (_, { first }, { Job, botId }) => {
       const selector = {
+        expiredAt: { $gte: new Date() },
         $or: [
           { type: 'ONE', status: 'QUEUEING', acquiredBy: { $exists: false } },
           { type: 'MULTI', status: 'QUEUEING', acquiredBy: botId },
         ]
       }
-      return jobs
+      return Job
         .find(selector)
         .limit(first)
         .toArray()
     },
-    bots: (_, {}, { db }) => {
-      const bots = db.collection('bots')
+    bots: (_, {}, { Bot }) => {
       const selector = {}
-      return bots
+      return Bot 
         .find(selector)
         .toArray()
     },
   },
   Mutation: {
-    createJob: (_, { input }, { db }) => {
-      const jobs = db.collection('jobs')
+    createTask: (_, { input, to }, { Job }) => {
       const doc = {
         id: shortid.generate(),
         createdAt: new Date(),
@@ -46,17 +44,16 @@ module.exports = {
         status: 'QUEUEING',
         ...input,
       }
-      return jobs
+      return Job 
         .insertOne(doc)
         .then(({ result: { ok } }) => ok ? doc : null)
     },
-    ping: (_, {}, { db, botId }) => {
+    ping: (_, {}, { Bot, botId }) => {
       if (!botId) return false
-      const bots = db.collection('bots')
       const selector = { id: botId }
       const doc = { $set: { updatedAt: new Date() } }
       const options = { upsert: true }
-      return bots
+      return Bot
         .updateOne(selector, doc, options)
         .then(({ result: { ok } }) => !!ok)
     }

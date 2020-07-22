@@ -3,32 +3,35 @@ module.exports = `
   scalar Time
   scalar DateTime
 
-  enum JobStatus {
+  enum PipeType {
+    CONTROL
+    JOB
+  }
+
+  enum TaskStatus {
     QUEUEING
     FAILED
     SUCCESSFUL
   }
 
-  enum JobType {
+  enum TaskType {
     ONE
     MULTI
   }
 
-  type Job {
+  type Task {
     id: ID!
     createdAt: DateTime!
     updatedAt: DateTime!
     expiredAt: DateTime!
-    status: JobStatus!
-    type: JobType!
+    status: TaskStatus!
+    type: TaskType!
     action: String!,
     payload: String! 
+    # in seconds
+    timeout: Int!
     # if jobType is ONE
     acquiredBy: ID
-  }
-
-  type Control {
-    id: ID!
   }
 
   type Bot {
@@ -37,24 +40,25 @@ module.exports = `
     live: Boolean!
   }
 
-  input CreateJobInput {
-    type: JobType!
+  input CreateTaskInput {
+    type: TaskType!
     action: String!
     payload: String! 
     expiredAt: DateTime!
+    timeout: Int!
   }
 
   type Mutation {
     # Send a report to server every interval
     ping: Boolean!
-    createJob(input: CreateJobInput!): Job
+    createTask(to: PipeType!, input: CreateTaskInput!): Task
   }
 
   type Query {
     bots: [Bot!]!
     # Job queue
-    jobs(first: Int!): [Job!]!
+    jobs(first: Int!): [Task!]!
     # Control queue
-    controls: [Control!]!
+    controls(first: Int!): [Task!]!
   }
 `
