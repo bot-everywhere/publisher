@@ -14,7 +14,19 @@ module.exports = {
     }
   },
   Query: {
-    controls: () => [],
+    controls: (_, { first }, { Control, botId }) => {
+      const selector = {
+        expiredAt: { $gte: new Date() },
+        $or: [
+          { type: 'ONE', status: 'QUEUEING', acquiredBy: { $exists: false } },
+          { type: 'MULTI', status: 'QUEUEING', acquiredBy: botId },
+        ]
+      }
+      return Control
+        .find(selector)
+        .limit(first)
+        .toArray()
+    },
     jobs: (_, { first }, { Job, botId }) => {
       const selector = {
         expiredAt: { $gte: new Date() },
@@ -36,7 +48,8 @@ module.exports = {
     },
   },
   Mutation: {
-    createTask: (_, { input, to }, { Job }) => {
+    createTask: (_, { input, to }, { Job, Control }) => {
+      const Task = to == 'CONTROL' ? Control : Job 
       const doc = {
         id: shortid.generate(),
         createdAt: new Date(),
@@ -44,7 +57,7 @@ module.exports = {
         status: 'QUEUEING',
         ...input,
       }
-      return Job 
+      return Task 
         .insertOne(doc)
         .then(({ result: { ok } }) => ok ? doc : null)
     },

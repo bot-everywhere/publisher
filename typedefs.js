@@ -3,7 +3,7 @@ module.exports = `
   scalar Time
   scalar DateTime
 
-  enum PipeType {
+  enum QueueName {
     CONTROL
     JOB
   }
@@ -51,7 +51,7 @@ module.exports = `
   type Mutation {
     # Send a report to server every interval
     ping: Boolean!
-    createTask(to: PipeType!, input: CreateTaskInput!): Task
+    createTask(to: QueueName!, input: CreateTaskInput!): Task
   }
 
   type Query {
