@@ -8,9 +8,11 @@
   },
   "dependencies": {
     "dotenv": "^8.2.0",
+    "graphql-iso-date": "^3.6.1",
+    "graphql-type-json": "^0.3.2",
     "graphql-yoga": "^1.18.3",
     "log4js": "^6.3.0",
-    "nodemon": "^2.0.4",
-    "redis": "^3.0.2"
+    "mongodb": "^3.5.9",
+    "nodemon": "^2.0.4"
   }
 }
