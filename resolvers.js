@@ -62,12 +62,12 @@ module.exports = {
       switch (id.split(':')[0]) {
         case 'JOB': {
           return Job
-            .update(selector, modifier)
+            .updateOne(selector, modifier)
             .then(({ result: { ok } }) => !!ok)
         }
         case 'CONTROL': {
           return Control
-            .update(selector, modifier)
+            .updateOne(selector, modifier)
             .then(({ result: { ok } }) => !!ok)
         }
       }
@@ -76,10 +76,10 @@ module.exports = {
     ping: (_, {}, { Bot, botId }) => {
       if (!botId) return false
       const selector = { id: botId }
-      const doc = { $set: { updatedAt: new Date() } }
+      const modifier = { $set: { updatedAt: new Date() } }
       const options = { upsert: true }
       return Bot
-        .updateOne(selector, doc, options)
+        .updateOne(selector, modifier, options)
         .then(({ result: { ok } }) => !!ok)
     },
   }
