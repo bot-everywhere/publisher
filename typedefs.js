@@ -46,6 +46,8 @@ module.exports = `
     ping: Boolean!
     # Create new task for Control or Job queue
     createTask(to: QueueName!, input: CreateTaskInput!): Task
+    # Update task status 
+    updateTask(id: ID!, status: TaskStatus!): Task
   }
 
   type Query {

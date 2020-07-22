@@ -45,7 +45,7 @@ module.exports = {
     createTask: (_, { input, to }, { Job, Control }) => {
       const Task = to == 'CONTROL' ? Control : Job 
       const doc = {
-        id: shortid.generate(),
+        id: `${to}:${shortid.generate()}`,
         createdAt: new Date(),
         updatedAt: new Date(),
         status: 'QUEUEING',
@@ -54,6 +54,10 @@ module.exports = {
       return Task 
         .insertOne(doc)
         .then(({ result: { ok } }) => ok ? doc : null)
+    },
+    updateTaskStatus: (_, { input, to, id }, { Job, Control }) => {
+      const Task = to == 'CONTROL' ? Control : Job 
+      return null
     },
     ping: (_, {}, { Bot, botId }) => {
       if (!botId) return false
