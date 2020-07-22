@@ -41,9 +41,10 @@ module.exports = {
         .insertOne(doc)
         .then(({ result: { ok } }) => ok ? doc : null)
     },
-    ping: (_, { id }, { db }) => {
+    ping: (_, {}, { db, botId }) => {
+      if (!botId) return false
       const bots = db.collection('bots')
-      const selector = { id }
+      const selector = { id: botId }
       const doc = { $set: { updatedAt: new Date() } }
       const options = { upsert: true }
       return bots

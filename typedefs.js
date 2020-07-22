@@ -48,15 +48,15 @@ module.exports = `
 
   type Mutation {
     # Send a report to server every interval
-    ping(id: ID!): Boolean!
+    ping: Boolean!
     createJob(input: CreateJobInput!): Job
   }
 
   type Query {
     bots: [Bot!]!
     # Job queue
-    jobs(botId: ID!): [Job!]!
+    jobs: [Job!]!
     # Control queue
-    controls(botId: ID!): [Control!]!
+    controls: [Control!]!
   }
 `
