@@ -45,9 +45,9 @@ module.exports = `
     # Send a report to server every interval
     ping: Boolean!
     # Create new task for Control or Job queue
-    createTask(to: QueueName!, input: CreateTaskInput!): Task
+    createTask(to: QueueName!, input: CreateTaskInput!): Boolean! 
     # Update task status 
-    updateTask(id: ID!, status: TaskStatus!): Task
+    updateTask(id: ID!, status: TaskStatus!): Boolean! 
   }
 
   type Query {

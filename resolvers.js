@@ -53,11 +53,25 @@ module.exports = {
       }
       return Task 
         .insertOne(doc)
-        .then(({ result: { ok } }) => ok ? doc : null)
+        .then(({ result: { ok } }) => !!ok)
     },
-    updateTaskStatus: (_, { input, to, id }, { Job, Control }) => {
-      const Task = to == 'CONTROL' ? Control : Job 
-      return null
+    updateTask: (_, { id, status }, { Job, Control, botId }) => {
+      if (!botId) return null 
+      const selector = { id, assignedTo: botId }
+      const modifier = { $set: { status } }
+      switch (id.split(':')[0]) {
+        case 'JOB': {
+          return Job
+            .update(selector, modifier)
+            .then(({ result: { ok } }) => !!ok)
+        }
+        case 'CONTROL': {
+          return Control
+            .update(selector, modifier)
+            .then(({ result: { ok } }) => !!ok)
+        }
+      }
+      return false
     },
     ping: (_, {}, { Bot, botId }) => {
       if (!botId) return false
