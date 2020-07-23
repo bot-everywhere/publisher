@@ -1,18 +1,10 @@
 const shortid = require('shortid')
 const { GraphQLDate, GraphQLTime, GraphQLDateTime } = require('graphql-iso-date')
 
-const PING_INTERVAL = 10 // mins
-
 module.exports = {
   Date: GraphQLDate,
   DateTime: GraphQLDateTime,
   Time: GraphQLTime,
-  Bot: {
-    live: ({ updatedAt }) => {
-      const t = new Date(updatedAt).getTime()
-      return Date.now() - t < PING_INTERVAL * 60 * 1000
-    }
-  },
   Query: {
     controls: (_, { first }, { Control, botId }) => {
       const selector = {
@@ -73,10 +65,10 @@ module.exports = {
       }
       return false
     },
-    ping: (_, {}, { Bot, botId }) => {
+    ping: (_, { input }, { Bot, botId }) => {
       if (!botId) return false
       const selector = { id: botId }
-      const modifier = { $set: { updatedAt: new Date() } }
+      const modifier = { $set: { updatedAt: new Date(), ...input } }
       const options = { upsert: true }
       return Bot
         .updateOne(selector, modifier, options)

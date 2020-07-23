@@ -29,8 +29,10 @@ module.exports = `
 
   type Bot {
     id: ID!
+    name: String!
+    pendingTask: Int!
+    pendingProcess: Int!
     updatedAt: DateTime!
-    live: Boolean!
   }
 
   input CreateTaskInput {
@@ -41,9 +43,15 @@ module.exports = `
     assignedTo: ID!
   }
 
+  input PingInput {
+    name: String!
+    pendingTask: Int!
+    pendingProcess: Int!
+  }
+
   type Mutation {
     # Send a report to server every interval
-    ping: Boolean!
+    ping(input: PingInput!): Boolean!
     # Create new task for Control or Job queue
     createTask(to: QueueName!, input: CreateTaskInput!): Boolean! 
     # Update task status 
@@ -51,6 +59,7 @@ module.exports = `
   }
 
   type Query {
+    # List of bots
     bots: [Bot!]!
     # Job queue
     jobs(first: Int!): [Task!]!
