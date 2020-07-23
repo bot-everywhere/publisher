@@ -33,6 +33,7 @@ module.exports = `
     pendingTask: Int!
     pendingProcess: Int!
     updatedAt: DateTime!
+    live: Boolean!
   }
 
   input CreateTaskInput {
